@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De closer a escalador</title>
+<link rel="stylesheet" href="reveal.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@400;500;600;700;800&family=Roboto+Slab:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: blanco dominante, rojo UPC como golpe, violeta DIGIFEST como acento secundario */
+:root{
+  --red:#E3001B; --red-d:#B30015; --red-l:#FDE8EA;
+  --vio:#4A2DBF; --vio-d:#2E1B7A; --vio-l:#ECE8FB;
+  --ink:#16141A; --ink2:#3D3A44; --mut:#7A7682; --line:#E8E5EC; --bg:#FFFFFF; --bg2:#F7F6F9;
+  --disp:'Barlow Condensed',Impact,'Arial Narrow',sans-serif;
+  --body:'Barlow',system-ui,-apple-system,sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+img{max-width:100%;display:block;}
+html,body,.reveal-viewport,.reveal,.reveal .slides{background:#fff;}
+.reveal{font-family:var(--body);color:var(--ink);}
+.reveal .slides section{width:100%;height:100%;top:0!important;padding:0;text-align:left;}
+.sl{position:relative;height:100%;display:flex;flex-direction:column;padding:86px 72px 64px;overflow:hidden;}
+.sl--mid{justify-content:center;}
+.sl--center{justify-content:center;align-items:center;text-align:center;}
+.bg-w{background:var(--bg);} .bg-g{background:var(--bg2);}
+.bg-r{background:var(--red);color:#fff;} .bg-v{background:var(--vio);color:#fff;} .bg-k{background:var(--ink);color:#fff;}
+
+/* marca */
+.logos{position:absolute;top:24px;right:44px;display:flex;align-items:center;gap:14px;z-index:6;}
+.logo-slot{height:40px;padding:0 12px;border:1.5px dashed currentColor;border-radius:8px;display:flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.45;}
+.tag-ev{position:absolute;top:30px;left:44px;font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:.02em;line-height:1;z-index:6;color:var(--red);}
+.tag-ev span{color:var(--vio);font-weight:700;font-size:15px;letter-spacing:.12em;margin-left:8px;}
+.bg-r .tag-ev,.bg-v .tag-ev,.bg-k .tag-ev{color:#fff}
+.bg-r .tag-ev span,.bg-v .tag-ev span,.bg-k .tag-ev span{color:rgba(255,255,255,.7)}
+.arrow-ic{display:inline-block;width:18px;height:18px;background:var(--red);position:relative;vertical-align:middle;margin-left:6px;}
+.arrow-ic::after{content:"↗";position:absolute;inset:0;color:#fff;font-size:14px;line-height:18px;text-align:center;font-family:var(--body);font-weight:800;}
+
+/* footer tracker */
+.foot{position:absolute;left:0;right:0;bottom:0;height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 44px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;letter-spacing:.04em;z-index:6;}
+.foot .steps{display:flex;gap:4px;}
+.foot .steps span{padding:3px 10px;border-radius:3px;color:rgba(255,255,255,.5);font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;}
+.foot .steps span.c{color:rgba(255,255,255,.75)}
+.foot .steps span.on{background:var(--red);color:#fff;}
+.foot .steps span.on.e{background:var(--vio);}
+.foot .steps i{width:1px;background:rgba(255,255,255,.25);margin:3px 6px;}
+
+/* type */
+.kick{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:12px;}
+.kick::before{content:"";width:22px;height:3px;background:currentColor;}
+.kick.v{color:var(--vio);}
+.bg-r .kick,.bg-v .kick,.bg-k .kick{color:#fff;}
+.sl--center .kick{align-self:center;}
+.reveal h1{font-family:var(--disp);font-weight:900;font-size:110px;line-height:.9;letter-spacing:-.01em;text-transform:uppercase;}
+.reveal h2{font-family:var(--disp);font-weight:800;font-size:58px;line-height:.98;letter-spacing:-.005em;text-transform:uppercase;margin-bottom:8px;}
+.reveal h3{font-family:var(--body);font-weight:800;font-size:22px;line-height:1.2;}
+.lead{font-size:21px;line-height:1.45;color:var(--ink2);}
+.bg-r .lead,.bg-v .lead,.bg-k .lead{color:rgba(255,255,255,.85);}
+.r{color:var(--red);} .v{color:var(--vio);}
+.statement{font-family:var(--disp);font-weight:900;font-size:86px;line-height:.95;text-transform:uppercase;max-width:1050px;}
+.small{font-size:13.5px;color:var(--mut);}
+.mt8{margin-top:8px}.mt14{margin-top:14px}.mt20{margin-top:20px}.mt28{margin-top:28px}
+
+/* cards */
+.g{display:grid;gap:14px;} .g2{grid-template-columns:1fr 1fr;} .g3{grid-template-columns:repeat(3,1fr);} .g4{grid-template-columns:repeat(4,1fr);}
+.card{background:#fff;border:1.5px solid var(--line);border-radius:6px;padding:20px 22px;}
+.bg-w .card{background:var(--bg2);border-color:var(--bg2);}
+.card p{font-size:17.5px;line-height:1.42;color:var(--ink2);margin-top:6px;}
+.card p b{color:var(--ink);}
+.card.hot{background:var(--red);border-color:var(--red);color:#fff;} .card.hot p,.card.hot p b{color:#fff;}
+.card.vio{background:var(--vio);border-color:var(--vio);color:#fff;} .card.vio p,.card.vio p b{color:#fff;}
+.n{font-family:var(--disp);font-weight:900;font-size:44px;line-height:.9;color:var(--red);margin-bottom:8px;}
+.card.hot .n,.card.vio .n{color:#fff;}
+.edge{border-left:4px solid var(--red);padding-left:16px;}
+
+/* portada */
+.cover{display:grid;grid-template-columns:1.1fr .9fr;height:100%;}
+.cover-l{padding:110px 40px 70px 72px;display:flex;flex-direction:column;justify-content:center;position:relative;}
+.cover-r{position:relative;background:var(--red);overflow:hidden;}
+.cover-r .bars{position:absolute;inset:0;}
+.cover-r .bars i{position:absolute;bottom:0;background:var(--red-d);}
+.cover-r img{position:absolute;bottom:0;left:50%;transform:translateX(-50%);height:88%;width:auto;object-fit:cover;filter:grayscale(.15) contrast(1.05);mask-image:linear-gradient(#000 75%,transparent);}
+.cover h1 .ln2{color:var(--red);}
+.cover .sub{font-size:24px;font-weight:600;color:var(--ink2);margin-top:22px;max-width:560px;line-height:1.35;}
+.speaker{display:flex;align-items:center;gap:14px;margin-top:38px;}
+.speaker img{width:58px;height:58px;border-radius:50%;object-fit:cover;}
+.speaker b{display:block;font-size:20px;font-weight:800;}
+.speaker span{font-size:15px;color:var(--mut);}
+.bmf{font-family:var(--disp);font-weight:700;font-size:18px;letter-spacing:.14em;color:var(--vio);text-transform:uppercase;border-top:2px solid var(--vio);padding-top:6px;display:inline-block;margin-top:18px;}
+
+/* números */
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:30px;border-top:2px solid var(--ink);}
+.nums div{padding:26px 22px 0 0;}
+.nums b{display:block;font-family:var(--disp);font-weight:900;font-size:120px;line-height:.9;color:var(--red);}
+.nums span{font-size:20px;font-weight:600;color:var(--ink2);}
+
+/* quién soy */
+.who{display:grid;grid-template-columns:400px 1fr;height:720px;}
+.who-l{background:var(--red);color:#fff;padding:96px 40px 70px;display:flex;flex-direction:column;justify-content:center;}
+.who-l img{width:112px;height:112px;border-radius:50%;object-fit:cover;border:4px solid #fff;margin-bottom:22px;}
+.who-l h2{font-size:64px;margin:0;}
+.who-l p{font-size:18px;line-height:1.4;margin-top:10px;color:rgba(255,255,255,.9);}
+.who-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:22px;border-top:2px solid rgba(255,255,255,.5);padding-top:14px;}
+.who-nums div{font-size:13px;font-weight:600;line-height:1.2;}
+.who-nums b{display:block;font-family:var(--disp);font-weight:900;font-size:38px;line-height:1;}
+.collage{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);gap:10px;padding:84px 40px 58px 32px;min-height:0;}
+.collage img{width:100%;height:100%;min-height:0;object-fit:cover;border-radius:4px;}
+.collage .w2{grid-column:span 2;}
+
+/* closer vs escalador */
+.vs{display:grid;grid-template-columns:1fr 80px 1fr;align-items:stretch;margin-top:26px;}
+.vs .col{border-radius:6px;padding:28px 30px;}
+.vs .col h3{font-family:var(--disp);font-weight:900;font-size:46px;text-transform:uppercase;line-height:1;margin-bottom:16px;}
+.vs ul{list-style:none;}
+.vs li{font-size:18.5px;line-height:1.35;padding:9px 0;border-top:1px solid rgba(0,0,0,.08);}
+.vs .c1{background:var(--red-l);} .vs .c1 h3{color:var(--red);}
+.vs .c2{background:var(--vio);color:#fff;} .vs .c2 li{border-color:rgba(255,255,255,.18);}
+.vs .ar{display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:60px;font-weight:900;color:var(--ink);}
+
+/* escalera del método */
+.stair{display:flex;align-items:flex-end;gap:10px;height:360px;margin-top:20px;}
+.st{flex:1;border-radius:6px 6px 0 0;padding:16px;color:#fff;display:flex;flex-direction:column;}
+.st .k{font-family:var(--disp);font-size:20px;font-weight:700;opacity:.8;}
+.st b{font-family:var(--disp);font-size:36px;font-weight:900;text-transform:uppercase;line-height:1;margin-top:2px;}
+.st p{font-size:14.5px;line-height:1.3;margin-top:8px;opacity:.9;}
+.st.c{background:var(--red);} .st.e{background:var(--vio);}
+.modes{display:flex;gap:10px;margin-top:10px;}
+.modes div{font-family:var(--disp);font-weight:800;font-size:20px;letter-spacing:.08em;text-transform:uppercase;padding:8px 0;text-align:center;border-top:4px solid;}
+.modes .mc{flex:4;color:var(--red);} .modes .me{flex:2;color:var(--vio);}
+
+/* divisor de sección */
+.divider .big{font-family:var(--disp);font-weight:900;font-size:180px;line-height:.85;text-transform:uppercase;}
+.divider .steps-row{display:flex;gap:12px;margin-top:30px;}
+.divider .steps-row span{font-family:var(--disp);font-size:26px;font-weight:800;text-transform:uppercase;padding:8px 18px;border:2px solid rgba(255,255,255,.6);border-radius:4px;}
+.skyline{position:absolute;right:0;bottom:34px;width:520px;height:420px;opacity:.18;}
+
+/* paso header */
+.step-h{display:flex;align-items:flex-end;gap:18px;margin-bottom:8px;}
+.step-h .num{font-family:var(--disp);font-weight:900;font-size:120px;line-height:.78;color:var(--red);}
+.step-h .num.v{color:var(--vio);}
+.step-h h2{margin:0;}
+
+/* backwards */
+.bw{display:grid;grid-template-columns:1.2fr .8fr;gap:30px;margin-top:22px;align-items:stretch;}
+.chain{display:flex;flex-direction:column;gap:10px;}
+.chain div{display:flex;align-items:center;gap:16px;background:var(--bg2);border-radius:6px;padding:14px 18px;font-size:18px;}
+.chain div b{font-family:var(--disp);font-size:28px;font-weight:900;color:var(--red);width:40px;}
+.ex{background:var(--ink);color:#fff;border-radius:6px;padding:24px 26px;display:flex;flex-direction:column;justify-content:space-between;}
+.ex .row{display:flex;justify-content:space-between;font-size:17px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.75);}
+.ex .row b{color:#fff;}
+.ex .res{font-family:var(--disp);font-weight:900;font-size:46px;line-height:1;color:#fff;margin-top:16px;text-transform:uppercase;}
+.ex .res span{display:block;font-family:var(--body);font-size:15px;font-weight:600;text-transform:none;color:var(--red-l);margin-top:6px;}
+
+/* quote */
+.quote{font-family:var(--disp);font-weight:800;font-size:46px;line-height:1.02;text-transform:uppercase;border-left:8px solid var(--red);padding-left:24px;margin:14px 0 22px;}
+.dims{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.dims div{background:var(--bg2);border-radius:6px;padding:14px 16px;font-size:18px;font-weight:700;}
+.dims div i{font-style:normal;font-family:var(--disp);font-size:24px;font-weight:900;color:var(--red);margin-right:8px;}
+.dims div.core{background:var(--red);color:#fff;} .dims div.core i{color:#fff;}
+
+/* lista */
+.qrow{display:flex;align-items:center;gap:18px;border-bottom:1.5px solid var(--line);padding:12px 0;font-size:21px;font-weight:600;}
+.qrow b{font-family:var(--disp);font-size:34px;font-weight:900;color:var(--red);width:34px;}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px;}
+.strip div{background:var(--vio-l);border-radius:6px;padding:12px 16px;font-size:15.5px;color:var(--ink2);}
+.strip b{font-family:var(--disp);font-size:28px;font-weight:900;color:var(--vio);margin-right:6px;}
+
+/* secuencia */
+.seq{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:22px;}
+.sq{border-top:6px solid var(--red);background:var(--bg2);padding:16px;border-radius:0 0 6px 6px;}
+.sq .d{font-family:var(--disp);font-size:26px;font-weight:900;color:var(--red);text-transform:uppercase;}
+.sq h3{font-size:18px;margin:4px 0 6px;}
+.sq p{font-size:14.5px;line-height:1.38;color:var(--ink2);}
+.sq.last{background:var(--ink);border-color:var(--vio);color:#fff;} .sq.last .d{color:#fff;} .sq.last p{color:rgba(255,255,255,.8);}
+
+/* techo */
+.signals{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:26px;max-width:1000px;}
+.signals div{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:16px 18px;font-size:19px;font-weight:600;display:flex;gap:12px;align-items:flex-start;}
+.signals div::before{content:"!";font-family:var(--disp);font-weight:900;font-size:22px;width:28px;height:28px;border-radius:50%;background:#fff;color:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* stack */
+.stack{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:22px;}
+.tool{background:var(--bg2);border-radius:6px;padding:18px 16px;border-top:5px solid var(--vio);}
+.tool b{font-family:var(--disp);font-size:32px;font-weight:900;text-transform:uppercase;display:block;line-height:1;}
+.tool .role{font-size:12.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--vio);margin:6px 0 8px;display:block;}
+.tool p{font-size:14.5px;line-height:1.38;color:var(--ink2);}
+.tool .pr{margin-top:10px;font-size:14px;font-weight:800;color:var(--ink);}
+.tool.crm{border-top-color:var(--red);background:var(--red-l);} .tool.crm .role{color:var(--red);}
+.costbar{display:flex;align-items:center;justify-content:space-between;background:var(--ink);color:#fff;border-radius:6px;padding:16px 24px;margin-top:16px;}
+.costbar .k{font-size:15px;color:rgba(255,255,255,.7);}
+.costbar b{font-family:var(--disp);font-size:40px;font-weight:900;}
+.costbar b.r2{color:#FF5A6A;}
+
+/* flow */
+.flow{display:flex;align-items:stretch;margin-top:24px;}
+.fs{flex:1;background:var(--bg2);border-radius:6px;padding:20px;}
+.fs .k{font-family:var(--disp);font-size:22px;font-weight:900;color:var(--vio);text-transform:uppercase;}
+.fs h3{margin:4px 0 6px;font-size:20px;}
+.fs p{font-size:16px;line-height:1.4;color:var(--ink2);}
+.fs.last{background:var(--vio);color:#fff;} .fs.last .k{color:#fff;} .fs.last p{color:rgba(255,255,255,.85);}
+.fa{width:40px;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:34px;font-weight:900;color:var(--vio);}
+
+/* cierre */
+.qr-card{background:#fff;color:var(--ink);border-radius:8px;padding:18px;width:240px;text-align:center;}
+.qr-card img{width:100%;}
+.qr-card p{font-size:15px;font-weight:700;margin-top:8px;}
+.qr-card span{font-size:12px;color:var(--mut);font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+
+/* tablas, editor, hub, trip */
+.forms{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px;}
+.forms span{background:var(--bg2);border-radius:6px;padding:8px 12px;font-size:14.5px;color:var(--ink2);}
+.forms b{font-family:var(--disp);font-size:20px;font-weight:900;text-transform:uppercase;color:var(--red);margin-right:6px;}
+.forms .hot{background:var(--red);color:#fff;} .forms .hot b{color:#fff;}
+.tbl{width:100%;border-collapse:separate;border-spacing:0;margin-top:16px;border-radius:6px;overflow:hidden;}
+.tbl th{background:var(--ink);color:#fff;font-size:12.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:10px 16px;text-align:left;}
+.tbl td{padding:9px 16px;font-size:17px;color:var(--ink2);border-bottom:1px solid var(--line);background:#fff;}
+.tbl tr:nth-child(even) td{background:var(--bg2);}
+.tbl td:first-child{font-weight:800;color:var(--ink);}
+.tbl td small{font-weight:600;color:var(--mut);font-size:13px;margin-left:6px;}
+.tbl tr.hot td{background:var(--red)!important;color:#fff;}
+.editor{background:var(--ink);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;}
+.editor .bar{display:flex;align-items:center;gap:7px;padding:10px 14px;background:rgba(255,255,255,.06);}
+.editor .bar i{width:10px;height:10px;border-radius:50%;background:#555;}
+.editor .bar span{margin-left:8px;font-size:12.5px;color:rgba(255,255,255,.6);font-weight:700;}
+.editor pre{font-family:ui-monospace,Consolas,monospace;font-size:17px;line-height:1.55;color:#EDEDED;padding:18px 22px;white-space:pre-wrap;}
+.editor pre em{font-style:normal;color:#FF5A6A;}
+.qpill{background:var(--red);color:#fff;border-radius:6px;padding:12px 20px;font-weight:800;font-size:17px;}
+.score{background:var(--bg2);border-radius:6px;padding:10px;text-align:center;font-size:14px;font-weight:600;color:var(--ink2);}
+.score b{display:block;font-family:var(--disp);font-size:30px;font-weight:900;color:var(--vio);}
+.score.hot{background:var(--vio);color:#fff;} .score.hot b{color:#fff;}
+.hub{position:relative;flex:1;margin-top:10px;}
+.hub svg.lines{position:absolute;inset:0;width:100%;height:100%;}
+.node{position:absolute;transform:translate(-50%,-50%);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:14px 20px;text-align:center;min-width:180px;}
+.node b{display:block;font-family:var(--disp);font-size:34px;font-weight:900;text-transform:uppercase;color:#fff;line-height:1;}
+.node span{font-size:14px;color:rgba(255,255,255,.65);font-weight:600;}
+.node.core{background:var(--red);border-color:var(--red);min-width:220px;padding:20px 26px;}
+.node.core b{font-size:46px;} .node.core span{color:#fff;}
+.base{position:absolute;left:8%;right:8%;bottom:0;background:var(--vio);border-radius:6px;padding:12px;text-align:center;color:#fff;font-family:var(--disp);font-weight:900;font-size:24px;text-transform:uppercase;}
+.base span{font-family:var(--body);text-transform:none;font-weight:600;font-size:15px;opacity:.85;margin-left:10px;}
+.trip{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:24px;}
+.trip div{background:var(--bg2);border-radius:6px;padding:16px 14px;border-top:5px solid var(--vio);}
+.trip span{font-size:12.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--vio);}
+.trip b{display:block;font-family:var(--disp);font-size:28px;font-weight:900;text-transform:uppercase;margin:4px 0;}
+.trip p{font-size:15px;color:var(--ink2);line-height:1.35;}
+.trip .last{background:var(--red);border-color:var(--ink);color:#fff;} .trip .last span,.trip .last p{color:#fff;}
+
+.cmap{width:100%;height:auto;margin-top:6px;flex:1;min-height:0;}
+.legend{display:flex;gap:22px;justify-content:center;font-size:13.5px;font-weight:700;color:var(--ink2);margin-top:4px;}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;}
+@keyframes drawin{from{stroke-dashoffset:400}to{stroke-dashoffset:0}}
+.present .cmap .edge{stroke-dasharray:400;animation:drawin 1.2s var(--ease) both;}
+@media (prefers-reduced-motion:reduce){.present .cmap .edge{animation:none;stroke-dasharray:none}}
+
+.gl-legend{display:flex;gap:14px;margin:2px 0 10px;}
+.gl-legend span{font-size:12.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:6px;}
+.gl-legend span::before{content:"";width:12px;height:12px;border-radius:3px;}
+.gl-legend .m{color:var(--red);} .gl-legend .m::before{background:var(--red);}
+.gl-legend .c{color:var(--vio);} .gl-legend .c::before{background:var(--vio);}
+.glossary{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;flex:1;min-height:0;align-content:start;}
+.gl{background:var(--bg2);border-radius:5px;padding:7px 11px;border-left:4px solid;}
+.gl.m{border-color:var(--red);} .gl.c{border-color:var(--vio);}
+.gl b{display:block;font-family:var(--disp);font-weight:900;font-size:19px;text-transform:uppercase;line-height:1.05;}
+.gl.m b{color:var(--red);} .gl.c b{color:var(--vio);}
+.gl span{font-size:13px;line-height:1.3;color:var(--ink2);}
+
+.journey{display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr 34px 1fr 34px 1fr;align-items:stretch;margin-top:16px;}
+.jc{background:var(--bg2);border-radius:6px;padding:16px 14px 14px;display:flex;flex-direction:column;position:relative;border-top:5px solid var(--vio);}
+.jc.core{background:var(--red);border-top-color:var(--ink);color:#fff;}
+.jn{position:absolute;top:10px;right:12px;font-family:var(--disp);font-weight:900;font-size:30px;color:var(--vio);opacity:.25;line-height:1;}
+.jc.core .jn{color:#fff;opacity:.4;}
+.jc>b{font-family:var(--disp);font-weight:900;font-size:30px;text-transform:uppercase;line-height:1;}
+.apps{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0;}
+.apps i{font-style:normal;font-size:13px;font-weight:800;background:var(--ink);color:#fff;border-radius:4px;padding:3px 8px;}
+.jc.core .apps i{background:#fff;color:var(--red);}
+.jc p{font-size:15px;line-height:1.38;color:var(--ink2);flex:1;}
+.jc.core p{color:#fff;}
+.pass{margin-top:10px;padding-top:8px;border-top:1.5px dashed rgba(0,0,0,.15);font-size:13.5px;color:var(--mut);}
+.pass b{color:var(--vio);}
+.jc.core .pass{border-color:rgba(255,255,255,.4);color:rgba(255,255,255,.85);} .jc.core .pass b{color:#fff;}
+.ja{display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:30px;font-weight:900;color:var(--vio);}
+.loop{margin-top:12px;background:var(--vio-l);border-radius:6px;padding:10px 16px;font-size:16px;color:var(--ink2);}
+.loop b{color:var(--vio);}
+.ghbar{margin-top:8px;background:var(--vio);color:#fff;border-radius:6px;padding:10px 16px;font-size:15.5px;}
+.ghbar b{font-family:var(--disp);font-size:20px;text-transform:uppercase;margin-right:6px;}
+.conn td{font-size:16px;}
+.conn tr.first td{background:var(--red-l)!important;}
+.lvl{display:inline-block;font-size:12.5px;font-weight:800;border-radius:4px;padding:3px 9px;}
+.lvl.f{background:#E3F4E8;color:#1E7A3C;} .lvl.m{background:#FFF1D6;color:#9A6200;} .lvl.a{background:var(--vio-l);color:var(--vio);}
+
+.serif{font-family:"Roboto Slab",Georgia,serif;font-weight:300;letter-spacing:-.01em;}
+.cover .sub.serif{font-size:30px;line-height:1.25;color:var(--ink2);max-width:600px;}
+
+@keyframes rise{from{opacity:0;translate:0 16px}to{opacity:1;translate:0 0}}
+.reveal .present .sl>*:not(.foot):not(.logos):not(.tag-ev):not(.skyline){animation:rise .7s var(--ease) both;}
+.reveal .present .sl>*:nth-child(4){animation-delay:.07s}
+.reveal .present .sl>*:nth-child(5){animation-delay:.14s}
+.reveal .present .sl>*:nth-child(6){animation-delay:.21s}
+@media (prefers-reduced-motion:reduce){.reveal .present .sl>*{animation:none!important}}
+.reveal .controls{color:var(--red);bottom:42px;right:24px;}
+.reveal .progress{color:var(--red);height:4px;}
+.reveal .slide-number{background:transparent;color:var(--mut);font-family:var(--body);font-size:12px;bottom:42px;right:100px;}
+</style>
+</head>
+<body>
+<div class="reveal"><div class="slides">
+
+<!-- 1 Portada -->
+<section data-step="-1">
+<div class="cover">
+  <div class="cover-l">
+    <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+    <div class="kick">Viernes 20 nov · 9:00 am · virtual</div>
+    <h1>De closer<br><span class="ln2">a escalador</span></h1>
+    <p class="sub serif">¿Cómo convertir las primeras ventas de un emprendimiento en un modelo de crecimiento sostenible?</p>
+    <span class="bmf">Business meets future</span>
+    <div class="speaker"><img src="img/10-headshot.jpg" alt=""><div><b>Pablo Balarín</b><span>Partner Manager · ventas B2B con IA</span></div></div>
+  </div>
+  <div class="cover-r">
+    <div class="bars"><i style="left:6%;width:12%;height:62%"></i><i style="left:22%;width:7%;height:80%"></i><i style="left:33%;width:16%;height:48%"></i><i style="left:54%;width:9%;height:92%"></i><i style="left:67%;width:14%;height:58%"></i><i style="left:85%;width:10%;height:74%"></i></div>
+    <img src="img/12-charla.jpg" alt="Pablo Balarín dando una charla" style="height:100%;width:100%;object-fit:cover;left:0;transform:none;mix-blend-mode:multiply;opacity:.92">
+    <div class="logos" style="color:#fff"><div class="logo-slot">Logo UPC</div></div>
+  </div>
+</div>
+<aside class="notes">Presentación. Pregunta de entrada a la sala: ¿cuántos ya vendieron algo esta semana? ¿Cuántos tienen un proceso para vender sin estar ellos?</aside>
+</section>
+
+<!-- 2 Números -->
+<section data-step="-1">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick">Antes de empezar</div>
+  <h2>Todo lo que vas a ver salió de aquí</h2>
+  <div class="nums">
+    <div><b>2,000+</b><span>reuniones de venta</span></div>
+    <div><b>380+</b><span>cuentas cerradas</span></div>
+    <div><b>3M+</b><span>visualizaciones de contenido</span></div>
+  </div>
+  <p class="lead mt28">Muchos "no" aprendidos, muchos procesos rotos y uno que sí funcionó. Hoy te lo paso en 6 pasos.</p>
+</div>
+<aside class="notes">No es para presumir: es para que sepan que el método viene de vender, equivocarme y medir. [PABLO: si quieres sumar MRR/ARR, primero cuadremos los números.]</aside>
+</section>
+
+<!-- 3 Quién soy -->
+<section data-step="-1">
+<div class="who">
+  <div class="who-l">
+    <img src="img/10-headshot.jpg" alt="">
+    <div class="kick" style="color:#fff">Quién soy</div>
+    <h2>Pablo Balarín</h2>
+    <p>Partner Manager en una startup de IA para ventas. Antes, vendedor B2B: cientos de demos, llamadas y seguimientos.</p>
+  </div>
+  <div class="collage">
+    <img src="img/12-charla.jpg" alt="" style="object-position:center 30%">
+    <img class="w2" src="img/13-ecommerce-day.jpg" alt="" style="object-position:center 45%">
+    <img src="img/15-encuentro-emprendedor.jpg" alt="" style="object-position:88% 40%">
+    <img class="w2" src="img/03-escenario-grupo.jpg" alt="" style="object-position:center 40%">
+    <img src="img/04-surf-1.jpg" alt="">
+    <img src="img/06-graduacion.jpg" alt="" style="object-position:center 25%">
+    <img src="img/05-fitness.jpg" alt="" style="object-position:center 25%">
+    <img src="img/07-montana.jpg" alt="" style="object-position:center 60%">
+    <img src="img/09-paracaidas.jpg" alt="" style="object-position:center 45%">
+    <img src="img/14-charla-publico.jpg" alt="" style="object-position:center 40%">
+  </div>
+</div>
+<aside class="notes">[PABLO: tu historia en 90 segundos: disciplina (surf, fitness), retos (paracaídas, Choquequirao), cómo llegaste a ventas.]</aside>
+</section>
+
+<!-- N Talonario -->
+<section data-step="-1">
+<div class="sl bg-w" style="padding-top:76px">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick">Antes de arrancar</div>
+  <h2 style="font-size:50px">Hablemos el mismo idioma: el talonario</h2>
+  <div class="gl-legend"><span class="m">Métricas</span><span class="c">Conceptos</span></div>
+  <div class="glossary"><div class="gl m"><b>MRR</b><span>Ingreso recurrente que entra cada mes</span></div><div class="gl m"><b>ARR</b><span>MRR × 12: tu ingreso recurrente de un año</span></div><div class="gl m"><b>NRR</b><span>Cuánto crece el ingreso de tus clientes actuales, sin contar nuevos</span></div><div class="gl m"><b>Tasa de cierre (CR)</b><span>De cada 10 conversaciones, cuántas te compran</span></div><div class="gl m"><b>CAC</b><span>Cuánto te cuesta conseguir un cliente nuevo</span></div><div class="gl m"><b>LTV</b><span>Cuánto te deja un cliente mientras se queda. Regla: ≥ 3× CAC</span></div><div class="gl m"><b>Churn</b><span>% de clientes que se van en un período</span></div><div class="gl m"><b>Ticket promedio</b><span>Cuánto paga en promedio cada cliente</span></div><div class="gl c"><b>ICP</b><span>Tu cliente ideal: el que más necesita lo tuyo y se queda</span></div><div class="gl c"><b>PMF</b><span>Product-market fit: tus clientes te refieren sin que se lo pidas</span></div><div class="gl c"><b>Lead</b><span>Persona o empresa que podría comprarte</span></div><div class="gl c"><b>MQL</b><span>Lead que mostró interés y encaja con tu ICP</span></div><div class="gl c"><b>PQL</b><span>Lead que ya probó tu producto o una demo</span></div><div class="gl c"><b>Pipeline</b><span>Todas tus oportunidades abiertas, por etapa</span></div><div class="gl c"><b>CRM</b><span>Donde vive cada lead, conversación y venta</span></div><div class="gl c"><b>Outbound</b><span>Tú contactas primero</span></div><div class="gl c"><b>Inbound</b><span>El cliente te encuentra a ti</span></div><div class="gl c"><b>ABM</b><span>Pocas cuentas de alto valor, muy personalizado</span></div><div class="gl c"><b>SEO</b><span>Aparecer gratis en Google</span></div><div class="gl c"><b>SEM</b><span>Anuncios pagados en buscadores</span></div><div class="gl c"><b>GEO</b><span>Que ChatGPT o Claude te recomienden</span></div><div class="gl c"><b>Playbook</b><span>El manual escrito de cómo vendes</span></div><div class="gl c"><b>Upsell / Cross sell</b><span>Subir de plan / sumar otro producto</span></div><div class="gl c"><b>Founder-led sales</b><span>El fundador vende todo él mismo</span></div></div>
+</div>
+<aside class="notes">Pide que le saquen foto: son las palabras que vas a usar toda la charla. No las leas todas; menciona 3 o 4 (MRR, ICP, PMF, CRM) y avanza. Puente: "con este vocabulario, vamos a la idea central".</aside>
+</section>
+
+<!-- 4 Closer vs escalador -->
+<section data-step="-1">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick">La pregunta de hoy</div>
+  <h2>Hay dos formas de vender</h2>
+  <p class="lead serif" style="font-size:22px">Pasar de una a otra es convertir tus primeras ventas en un modelo de crecimiento sostenible. Exige estrategia, conocimiento del mercado y ejecución.</p>
+  <div class="vs">
+    <div class="col c1"><h3>Closer</h3><ul>
+      <li>Tú cierras cada venta</li><li>Si tú paras, las ventas paran</li><li>Crece con tus horas</li><li>Sabes vender, pero no sabes <b>por qué</b> te compran</li></ul></div>
+    <div class="ar">→</div>
+    <div class="col c2"><h3>Escalador</h3><ul>
+      <li>Un sistema cierra contigo o sin ti</li><li>Si tú paras, el proceso sigue</li><li>Crece con datos y repetición</li><li>Sabes <b>exactamente</b> qué funciona y por qué</li></ul></div>
+  </div>
+</div>
+<aside class="notes">Todos empezamos como closers, y está bien. El error es quedarse ahí. Hoy te doy el método para pasar de uno al otro.</aside>
+</section>
+
+<!-- 5 El método -->
+<section data-step="-1">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick">El método</div>
+  <h2>6 pasos, en orden</h2>
+  <div class="stair">
+    <div class="st c" style="height:42%"><span class="k">01</span><b>Mide</b><p>Tu número hacia atrás</p></div>
+    <div class="st c" style="height:54%"><span class="k">02</span><b>Elige</b><p>Tu cliente ideal (ICP)</p></div>
+    <div class="st c" style="height:66%"><span class="k">03</span><b>Cierra a mano</b><p>Tus primeras 10 ventas</p></div>
+    <div class="st c" style="height:78%"><span class="k">04</span><b>Encuentra</b><p>Dónde vive tu ICP</p></div>
+    <div class="st e" style="height:89%"><span class="k">05</span><b>Valida</b><p>Product-market fit</p></div>
+    <div class="st e" style="height:100%"><span class="k">06</span><b>Escala</b><p>Playbook, IA y equipo</p></div>
+  </div>
+  <div class="modes"><div class="mc">Modo closer</div><div class="me">Modo escalador</div></div>
+</div>
+<aside class="notes">El orden importa. Saltarte pasos es la razón número uno por la que los emprendedores "escalan" algo que todavía no funciona.</aside>
+</section>
+
+<!-- 6 Divider closer -->
+<section data-step="-1">
+<div class="sl sl--mid bg-r divider">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <svg class="skyline" viewBox="0 0 520 420"><g fill="#fff"><rect x="10" y="180" width="60" height="240"/><rect x="80" y="90" width="40" height="330"/><rect x="130" y="230" width="90" height="190"/><rect x="230" y="40" width="50" height="380"/><rect x="290" y="150" width="80" height="270"/><rect x="380" y="110" width="45" height="310"/><rect x="435" y="210" width="75" height="210"/></g></svg>
+  <div class="kick">Parte 1</div>
+  <div class="big">Modo<br>closer</div>
+  <div class="steps-row"><span>01 Mide</span><span>02 Elige</span><span>03 Cierra a mano</span><span>04 Encuentra</span></div>
+</div>
+</section>
+
+<!-- 7 Mide -->
+<section data-step="0">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="step-h"><span class="num">01</span><div><div class="kick">Mide</div><h2>Tu número hacia atrás</h2></div></div>
+  <p class="lead">Antes de salir a vender, sabe cuántas conversaciones necesitas.</p>
+  <div class="bw">
+    <div class="chain">
+      <div><b>1</b><span><strong>Meta de MRR</strong> a 6 meses</span></div>
+      <div><b>2</b><span>÷ ticket promedio = <strong>clientes</strong> que necesitas</span></div>
+      <div><b>3</b><span>÷ tu tasa de cierre = <strong>conversaciones</strong> al mes</span></div>
+      <div><b>4</b><span>= <strong>leads</strong> que tienes que generar</span></div>
+    </div>
+    <div class="ex">
+      <div>
+        <div class="row"><span>Meta</span><b>$3,000 MRR</b></div>
+        <div class="row"><span>Ticket</span><b>$50 al mes</b></div>
+        <div class="row"><span>Clientes nuevos</span><b>10 al mes</b></div>
+        <div class="row" style="border:0"><span>Tasa de cierre</span><b>10%</b></div>
+      </div>
+      <div class="res">100 conversaciones al mes<span>Unas 5 por día hábil. Ese es tu trabajo real.</span></div>
+    </div>
+  </div>
+</div>
+<aside class="notes">Ejemplo ilustrativo. Métricas a conocer: MRR, tasa de cierre, CAC, LTV (LTV ≥ 3× CAC), churn. Pídeles que hagan su cuenta en el celular ahora mismo.</aside>
+</section>
+
+<!-- 8 Elige -->
+<section data-step="1">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="step-h"><span class="num">02</span><div><div class="kick">Elige</div><h2>Tu cliente ideal (ICP)</h2></div></div>
+  <div class="quote">El cliente correcto no es el que compra. <span class="r">Es el que se queda.</span></div>
+  <div class="dims">
+    <div class="core"><i>1</i>Dolor claro</div><div><i>2</i>Madurez tecnológica</div><div><i>3</i>Estabilidad financiera</div>
+    <div><i>4</i>Mindset de crecimiento</div><div><i>5</i>Estructura del equipo</div><div><i>6</i>Fit con tu equipo</div>
+  </div>
+</div>
+<aside class="notes">Si le falta una dimensión, igual te puede comprar, pero es más probable que se vaya. El dolor manda: sin dolor claro no hay venta que dure. [PABLO: caso de un cliente que compró y se fue.]</aside>
+</section>
+
+<!-- 9 Elige: preguntas -->
+<section data-step="1">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick">Elige · cómo construirlo</div>
+  <h2>Hazle estas 5 preguntas a tus clientes</h2>
+  <div class="mt8">
+    <div class="qrow"><b>1</b>¿Cuánto tiempo llevas con este problema sin resolverlo?</div>
+    <div class="qrow"><b>2</b>¿Qué usas hoy para resolverlo?</div>
+    <div class="qrow"><b>3</b>¿Quién toma la decisión y en qué plazo?</div>
+    <div class="qrow"><b>4</b>¿Has usado herramientas similares antes?</div>
+    <div class="qrow"><b>5</b>¿Cuál es tu métrica de éxito en los próximos 6 meses?</div>
+  </div>
+  <div class="strip"><div><b>15-20</b>entrevistas 1 a 1 mínimas</div><div><b>50</b>respuestas si haces encuesta</div><div><b>3</b>señales: dolor repetido, sin sugerirlo, lo resuelven con parches</div></div>
+</div>
+<aside class="notes">Si lo resuelven con Excel, WhatsApp o a mano, el dolor es real. Ejercicio rápido: "Le vendo a [quién] que tiene [qué dolor], que hoy lo resuelve con [qué parche] y que puede pagar [cuánto]".</aside>
+</section>
+
+<!-- 10 Cierra a mano -->
+<section data-step="2">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="step-h"><span class="num">03</span><div><div class="kick">Cierra a mano</div><h2>Tus primeras 10 ventas son para aprender</h2></div></div>
+  <p class="lead">No hay ICP perfecto, ni sistema, ni presupuesto. Solo conversaciones uno a uno.</p>
+  <div class="g g3 mt20">
+    <div class="card"><div class="n">01</div><h3>Vende primero a tu red</h3><p>Amigos, familia, ex compañeros. Practicas el pitch con gente que te da feedback honesto.</p></div>
+    <div class="card"><div class="n">02</div><h3>Hazlo a mano, sin escalar</h3><p>Lo que repitas 10 veces es lo que después vas a automatizar.</p></div>
+    <div class="card hot"><div class="n">03</div><h3>A cada "no", pregunta por qué</h3><p>Es tu primera data de mercado. <b>Vale más que cualquier encuesta.</b></p></div>
+  </div>
+</div>
+<aside class="notes">Aquí está el closer en su mejor versión: aprendiendo. La IA escala lo que ya funciona a mano; si no vendiste 10 veces sin IA, no sabes qué automatizar.</aside>
+</section>
+
+<!-- 11 Encuentra: 4 formas -->
+<section data-step="3">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="step-h"><span class="num">04</span><div><div class="kick">Encuentra</div><h2>Las 4 formas de conseguir clientes</h2></div></div>
+  <div class="g g4 mt20">
+    <div class="card"><div class="n">OUT</div><h3>Outbound</h3><p>Tú vas a buscarlos: LinkedIn, llamadas, mensajes directos. <b>Rápido para validar.</b></p></div>
+    <div class="card"><div class="n">IN</div><h3>Inbound</h3><p>Ellos te encuentran: contenido, SEO, casos de éxito. <b>Lento, pero se acumula.</b></p></div>
+    <div class="card"><div class="n">ABM</div><h3>Cuentas clave</h3><p>Pocas empresas de alto valor, <b>mucha personalización.</b></p></div>
+    <div class="card hot"><div class="n">REF</div><h3>Referidos</h3><p><b>CAC casi cero y LTV más alto.</b> El más barato y el más subestimado.</p></div>
+  </div>
+  <p class="lead mt20" style="font-size:19px">No necesitas estar en todos lados. Elige 1 o 2 canales donde ya vive tu ICP y hazlos bien.</p>
+</div>
+<aside class="notes">Meta (IG, FB, WhatsApp) para consumidor y pymes; LinkedIn para B2B; comunidades y eventos para nichos. Al inicio: outbound para aprender, referidos para crecer barato.</aside>
+</section>
+
+<!-- N Ecosistemas -->
+<section data-step="3">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick">Encuentra · ecosistemas de prospección</div>
+  <h2>¿Dónde vive tu ICP?</h2>
+  <table class="tbl">
+    <tr><th style="width:250px">Ecosistema</th><th style="width:250px">Para quién</th><th>Cómo prospectar ahí</th></tr>
+    <tr><td>Meta <small>IG · FB · WhatsApp</small></td><td>Consumidor final y pymes</td><td>Contenido + campañas que llevan a WhatsApp o a un formulario</td></tr>
+    <tr><td>LinkedIn</td><td>B2B, decisores</td><td>Personal branding + mensaje directo 1 a 1</td></tr>
+    <tr><td>X</td><td>Tech, founders</td><td>Conversación pública y DMs</td></tr>
+    <tr><td>Google <small>SEO · SEM</small></td><td>Quien ya busca tu solución</td><td>Contenido que responde sus preguntas + anuncios por búsqueda</td></tr>
+    <tr><td>Respuestas de IA <small>GEO</small></td><td>Quien le pregunta a ChatGPT o Claude</td><td>FAQs claras, comparativas y menciones en sitios confiables</td></tr>
+    <tr><td>Comunidades y eventos</td><td>Nichos, ecosistemas</td><td>Webinars, meetups, ferias como DIGIFEST</td></tr>
+    <tr class="hot"><td>Referidos</td><td>Tus clientes contentos</td><td>Pide 1 referido después de cada resultado</td></tr>
+  </table>
+</div>
+<aside class="notes">No necesitas estar en todos. Elige 1 o 2 donde vive tu ICP y hazlo bien. Este mismo evento es un ejemplo de prospección por comunidad.</aside>
+</section>
+
+<!-- N SEO SEM GEO -->
+<section data-step="3">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick">Encuentra · cuando te están buscando</div>
+  <h2>SEO, SEM y GEO</h2>
+  <div class="g g3 mt20">
+    <div class="card"><div class="n">SEO</div><h3>Google orgánico</h3><p>Blog, casos de éxito y perfil de Google Business si vendes local. <b>Lento, pero gratis y acumulativo.</b></p></div>
+    <div class="card"><div class="n">SEM</div><h3>Google Ads</h3><p>Pagas por aparecer cuando alguien busca tu solución. <b>Intención alta desde el día 1.</b> Sirve para validar si alguien la busca.</p></div>
+    <div class="card vio"><div class="n">GEO</div><h3>Respuestas de IA</h3><p>Que ChatGPT, Claude o Perplexity te recomienden. <b>Cada vez más gente pregunta a una IA antes que a Google.</b></p></div>
+  </div>
+  <div class="costbar" style="margin-top:18px"><span class="k" style="color:#fff;font-weight:800;letter-spacing:.1em;text-transform:uppercase">Cómo ayuda la IA</span><span class="k" style="flex:1;margin-left:24px;font-size:17px;color:rgba(255,255,255,.85)">Claude te saca las palabras clave de tu ICP, escribe artículos y anuncios, y analiza qué búsquedas sí convierten.</span></div>
+</div>
+</section>
+
+<!-- N Personal branding con IA -->
+<section data-step="3">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick">Encuentra · personal branding con IA</div>
+  <h2>Tus reuniones son tu contenido</h2>
+  <p class="lead">Así llegué a 3M+ visualizaciones sin pagar ads.</p>
+  <div class="flow">
+    <div class="fs"><div class="k">1 · Captura</div><h3>Granola</h3><p>Guarda las preguntas y objeciones reales de tus clientes. Esa es tu mina de temas.</p></div><div class="fa">→</div>
+    <div class="fs"><div class="k">2 · Transforma</div><h3>Claude</h3><p>"Saca las 5 dudas que más se repiten y escribe un guion de 45 segundos para cada una, con gancho en la primera frase."</p></div><div class="fa">→</div>
+    <div class="fs last"><div class="k">3 · Publica y mide</div><h3>Redes</h3><p>Video corto, post y carrusel por tema. Lo que tenga más comentarios se vuelve anuncio.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- 12 Encuentra: outbound -->
+<section data-step="3">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick">Encuentra · outbound que funciona</div>
+  <h2>5 toques en 3 semanas</h2>
+  <div class="seq">
+    <div class="sq"><div class="d">Día 0</div><h3>Primer mensaje</h3><p>Personalizado, con una señal concreta de su negocio. Sin pitch.</p></div>
+    <div class="sq"><div class="d">Día 3</div><h3>Aporta valor</h3><p>Un dato o un caso que le sirva, aunque no te compre.</p></div>
+    <div class="sq"><div class="d">Día 7</div><h3>Pregunta directa</h3><p>"¿Tiene sentido una llamada de 15 minutos esta semana?"</p></div>
+    <div class="sq"><div class="d">Día 12</div><h3>Otro canal</h3><p>Si fue LinkedIn, ahora correo o WhatsApp (si te dio el número).</p></div>
+    <div class="sq last"><div class="d">Día 20</div><h3>Cierra el ciclo</h3><p>"Entiendo que no es prioridad. ¿Te escribo en 3 meses?"</p></div>
+  </div>
+  <p class="small mt14">Plantilla sugerida. La mayoría abandona después del primer mensaje: el seguimiento es donde se gana.</p>
+</div>
+</section>
+
+<!-- 13 Techo del closer -->
+<section data-step="-1">
+<div class="sl sl--mid bg-r">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick">El techo del closer</div>
+  <div class="statement">Si todo depende de ti,<br>no estás escalando.</div>
+  <div class="signals">
+    <div>Tu agenda está llena y aun así no llegas a la meta</div>
+    <div>Si te vas 2 semanas, las ventas se caen</div>
+    <div>No sabes explicar por qué te compran</div>
+    <div>Cada venta nueva se siente como empezar de cero</div>
+  </div>
+</div>
+<aside class="notes">Pregunta a la sala: ¿cuántos se sienten así? Si marcaste 2 o más, llegó el momento de cambiar de modo.</aside>
+</section>
+
+<!-- 14 Divider escalador -->
+<section data-step="-1">
+<div class="sl sl--mid bg-v divider">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <svg class="skyline" viewBox="0 0 520 420"><g fill="#fff"><rect x="10" y="180" width="60" height="240"/><rect x="80" y="90" width="40" height="330"/><rect x="130" y="230" width="90" height="190"/><rect x="230" y="40" width="50" height="380"/><rect x="290" y="150" width="80" height="270"/><rect x="380" y="110" width="45" height="310"/><rect x="435" y="210" width="75" height="210"/></g></svg>
+  <div class="kick">Parte 2</div>
+  <div class="big">Modo<br>escalador</div>
+  <div class="steps-row"><span>05 Valida</span><span>06 Escala</span></div>
+</div>
+</section>
+
+<!-- 15 Valida: PMF -->
+<section data-step="4">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="step-h"><span class="num v">05</span><div><div class="kick v">Valida</div><h2>Product-market fit</h2></div></div>
+  <div class="quote" style="border-color:var(--vio)">No se define. Se descubre. <span class="v">Y duele encontrarlo.</span></div>
+  <p class="lead">PMF es cuando tus clientes empiezan a referirte sin que se lo pidas. Sin eso, escalar duele así:</p>
+  <div class="g g3 mt14">
+    <div class="card"><h3>Proyecciones rotas</h3><p>Tu MRR no crece como lo proyectaste, por más que vendas.</p></div>
+    <div class="card"><h3>Crecimiento ilusorio</h3><p>Consigues clientes solo para reemplazar a los que se van.</p></div>
+    <div class="card vio"><h3>Deuda comercial</h3><p>Cada venta sin PMF es <b>deuda disfrazada de crecimiento.</b></p></div>
+  </div>
+</div>
+</section>
+
+<!-- 16 Valida: tácticas -->
+<section data-step="4">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick v">Valida · más rápido</div>
+  <h2>4 tácticas para llegar al PMF</h2>
+  <div class="g g2 mt20">
+    <div class="card"><div class="n" style="color:var(--vio)">01</div><h3>Descuentos con condición de uso</h3><p>El descuento se gana usando el producto. Así ves quién lo usa de verdad.</p></div>
+    <div class="card"><div class="n" style="color:var(--vio)">02</div><h3>Estudia a los que se van</h3><p>¿Qué tienen en común? Probablemente no eran tu ICP.</p></div>
+    <div class="card"><div class="n" style="color:var(--vio)">03</div><h3>Habla con los que se quedan</h3><p>¿Por qué se quedan? Esa respuesta es tu mejor copy de venta.</p></div>
+    <div class="card vio"><div class="n">04</div><h3>Define tu métrica de activación</h3><p>El momento en que el cliente "entiende" tu producto. <b>Llévalo ahí lo antes posible.</b></p></div>
+  </div>
+</div>
+</section>
+
+<!-- 17 Escala: playbook -->
+<section data-step="5">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="step-h"><span class="num v">06</span><div><div class="kick v">Escala</div><h2>Primero, escribe tu playbook</h2></div></div>
+  <p class="lead">Escalar sin sistema es multiplicar el caos. El playbook es lo que hace que otro venda como tú.</p>
+  <div class="g g3 mt20">
+    <div class="card"><h3>Etapas del ciclo de venta</h3><p>Qué pasa en cada una y qué hace avanzar al lead.</p></div>
+    <div class="card"><h3>ICP documentado</h3><p>Tu frase del paso 2, por escrito.</p></div>
+    <div class="card"><h3>Mensajes que funcionan</h3><p>Los primeros mensajes y seguimientos con mejor respuesta.</p></div>
+    <div class="card"><h3>Respuestas a objeciones</h3><p>"Está caro", "lo tengo que pensar", "ya uso otra cosa".</p></div>
+    <div class="card"><h3>Onboarding</h3><p>Qué pasa después de que el cliente firma.</p></div>
+    <div class="card vio"><h3>Señales de churn temprano</h3><p>Los comportamientos que avisan que alguien <b>se va a ir.</b></p></div>
+  </div>
+  <p class="lead mt14" style="font-size:19px"><b class="v">El playbook lo escribes tú. Lo ejecuta tu stack de IA →</b> veamos cada app.</p>
+</div>
+</section>
+
+<!-- N Claude + Meta -->
+<section data-step="5">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick v">Escala · tu stack de IA, app por app · Claude</div>
+  <h2>Si tu ICP vive en Meta: crea y analiza campañas con Claude</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:18px;align-items:stretch">
+    <div class="chain">
+      <div><b>1</b><span><strong>Conecta</strong> el conector oficial de Meta Ads (beta) y elige tu cuenta publicitaria</span></div>
+      <div><b>2</b><span><strong>Crea:</strong> estructura, públicos y copies a partir de tu ICP</span></div>
+      <div><b>3</b><span><strong>Analiza</strong> cada semana qué anuncio funciona y cuál apagar</span></div>
+      <div style="background:var(--vio);color:#fff"><b style="color:#fff">4</b><span><strong>Decide tú:</strong> Claude recomienda, tú apruebas</span></div>
+    </div>
+    <div class="editor"><div class="bar"><i></i><i></i><i></i><span>Claude · análisis semanal</span></div>
+<pre>Mi ICP es: <em>[tu frase]</em>.
+Revisa mis campañas de Meta de los
+últimos 7 días y dime:
+1) qué anuncio tiene el menor costo
+   por lead calificado,
+2) cuál apagar y por qué,
+3) qué público probar,
+4) 3 copies nuevos del ganador.</pre></div>
+  </div>
+  <p class="small mt14">Claude: gratis · Pro $20/mes. Si tu cuenta aún no tiene el conector, exporta el reporte de Ads Manager y súbelo.</p>
+</div>
+</section>
+
+<!-- N Grok -->
+<section data-step="5">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick v">Escala · tu stack de IA · Grok</div>
+  <h2>De tu ICP a 20 prospectos</h2>
+  <div style="display:grid;grid-template-columns:.85fr 1.15fr;gap:20px;margin-top:18px;align-items:stretch">
+    <div class="card"><h3>Qué hace</h3><p>Busca en tiempo real en la web y en X. Investiga tu mercado, arma listas de prospectos desde fuentes públicas, detecta señales de compra y redacta mensajes personalizados.</p><p class="mt14"><b>Gratis con límites · SuperGrok $30/mes</b></p></div>
+    <div class="editor"><div class="bar"><i></i><i></i><i></i><span>Grok · prospección</span></div>
+<pre>Mi ICP es: <em>[tu frase]</em>. Busca 20
+empresas en <em>[país]</em> que encajen.
+Para cada una: nombre, cargo, link
+público, una señal reciente del dolor
+y un primer mensaje de 3 líneas.
+Ordénalos del más al menos prometedor.</pre></div>
+  </div>
+  <div class="qpill mt14">Regla: Grok investiga y redacta. Tú envías. LinkedIn prohíbe el scraping y los mensajes automáticos.</div>
+</div>
+</section>
+
+<!-- N Granola + calificar -->
+<section data-step="5">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick v">Escala · tu stack de IA · Granola</div>
+  <h2>Graba, califica y habla solo con quien sí compra</h2>
+  <div style="display:grid;grid-template-columns:.9fr 1.1fr;gap:20px;margin-top:18px;align-items:stretch">
+    <div class="card"><h3>Granola</h3><p>Toma notas de tus reuniones <b>sin bot</b> en la llamada. Al terminar completa las notas, guarda la transcripción y las manda a tu CRM (Attio, HubSpot), Slack o Notion.</p><p class="mt14"><b>Gratis con historial limitado · Business $14/mes</b></p></div>
+    <div>
+      <table class="tbl" style="margin-top:0">
+        <tr><th>Las 5 preguntas del ICP</th><th style="width:110px">Puntaje</th></tr>
+        <tr><td>Tiempo con el problema</td><td>0 · 1 · 2</td></tr>
+        <tr><td>Qué usa hoy</td><td>0 · 1 · 2</td></tr>
+        <tr><td>Decisor y plazo</td><td>0 · 1 · 2</td></tr>
+        <tr><td>Herramientas previas</td><td>0 · 1 · 2</td></tr>
+        <tr><td>Métrica de éxito</td><td>0 · 1 · 2</td></tr>
+      </table>
+      <div class="g g3 mt8" style="gap:8px">
+        <div class="score hot"><b>8–10</b>Propuesta esta semana</div><div class="score"><b>5–7</b>Nutrir con valor</div><div class="score"><b>0–4</b>No es tu ICP hoy</div>
+      </div>
+    </div>
+  </div>
+</div>
+<aside class="notes">Prompt: "Con estas notas de Granola, puntúa de 0 a 2 cada una de mis 5 preguntas de ICP, suma el total y dime el próximo paso." Avisa siempre que tomas notas: en varios países es obligatorio.</aside>
+</section>
+
+<!-- N CRM + Paseo + GitHub -->
+<section data-step="5">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick v">Escala · tu stack de IA · el centro y la base</div>
+  <h2>CRM, agentes y GitHub</h2>
+  <div class="g g3 mt20">
+    <div class="tool crm"><b>CRM</b><span class="role">El centro · yo uso Attio</span><p>Donde vive cada lead, cada conversación y cada venta. Attio tiene IA: completa datos de empresas y le preguntas "¿qué deals están parados hace 2 semanas?"</p><div class="pr">Attio gratis hasta 3 usuarios · Plus ~$35 · HubSpot CRM gratis</div></div>
+    <div class="tool"><b>Paseo</b><span class="role">El equipo de agentes</span><p>App open source para manejar varios agentes de IA a la vez desde la compu o el celular: uno investiga, otro redacta seguimientos, otro actualiza el CRM.</p><div class="pr">Gratis · pagas solo el modelo</div></div>
+    <div class="tool"><b>GitHub</b><span class="role">La base</span><p>Guarda tus prompts, tu playbook y tus automatizaciones con historial de cambios. Claude Code y los agentes trabajan directo sobre tus repos.</p><div class="pr">Gratis</div></div>
+  </div>
+  <p class="lead mt20" style="font-size:19px">Cualquier CRM sirve si todo llega ahí solo. Si tienes que copiar y pegar, en 2 semanas lo dejas de usar.</p>
+</div>
+<aside class="notes">[PABLO: cuenta cómo usas Paseo en tu día a día.]</aside>
+</section>
+
+<!-- N Recorrido de un lead -->
+<section data-step="5">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick v">Escala · cómo se conectan tus apps</div>
+  <h2>El recorrido de un lead por tus apps</h2>
+  <p class="lead">Ya viste cada app. Juntas funcionan así: cada una hace una parte y le pasa el dato a la siguiente.</p>
+  <div class="journey">
+    <div class="jc fragment" data-fragment-index="1"><span class="jn">1</span><b>Atrae</b><div class="apps"><i>Meta Ads</i><i>Google</i><i>LinkedIn · X</i></div><p>Aquí aparece el lead: ve tu anuncio o tu contenido y te escribe.</p><div class="pass">Pasa: <b>lead nuevo</b></div></div>
+    <div class="ja fragment" data-fragment-index="2">→</div>
+    <div class="jc fragment" data-fragment-index="2"><span class="jn">2</span><b>Investiga</b><div class="apps"><i>Grok</i></div><p>Te dice quién es, qué empresa tiene y qué dolor muestra.</p><div class="pass">Pasa: <b>ficha con señales</b></div></div>
+    <div class="ja fragment" data-fragment-index="3">→</div>
+    <div class="jc fragment" data-fragment-index="3"><span class="jn">3</span><b>Conversa</b><div class="apps"><i>WhatsApp</i><i>Granola</i></div><p>Hablas con él. Granola anota la reunión y la puntúa del 0 al 10.</p><div class="pass">Pasa: <b>notas + puntaje</b></div></div>
+    <div class="ja fragment" data-fragment-index="4">→</div>
+    <div class="jc core fragment" data-fragment-index="4"><span class="jn">4</span><b>Registra</b><div class="apps"><i>CRM · Attio</i></div><p>Todo queda en un solo lugar: etapa, notas y próximo paso.</p><div class="pass">Pasa: <b>tu pipeline</b></div></div>
+    <div class="ja fragment" data-fragment-index="5">→</div>
+    <div class="jc fragment" data-fragment-index="5"><span class="jn">5</span><b>Actúa</b><div class="apps"><i>Claude</i><i>Paseo</i></div><p>Claude redacta el seguimiento. Los agentes de Paseo hacen lo repetitivo.</p><div class="pass">Tú: <b>revisas y envías</b></div></div>
+  </div>
+  <div class="loop fragment" data-fragment-index="6"><b>↺ Vuelve al paso 1:</b> Claude analiza qué campañas trajeron a los mejores clientes y ajustas tus anuncios.</div>
+  <div class="ghbar fragment" data-fragment-index="6"><b>GitHub</b> guarda debajo de todo tus prompts y tu playbook, para que el sistema no viva solo en tu cabeza.</div>
+</div>
+<aside class="notes">Cuéntalo con un ejemplo: "Ana vio mi anuncio en Instagram (1). Antes de hablar, Grok me dijo que tiene una tienda con 3 vendedores (2). En la llamada, Granola tomó notas y le dio 8 de 10 (3). Eso quedó solo en Attio (4). Al día siguiente Claude me redactó el seguimiento y yo lo mandé (5)." Cada clic muestra una etapa.</aside>
+</section>
+
+<!-- N Conexiones a armar -->
+<section data-step="5">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick v">Escala · las conexiones</div>
+  <h2>Las conexiones que tienes que armar</h2>
+  <table class="tbl conn">
+    <tr><th style="width:250px">Conexión</th><th>Qué pasa sola</th><th style="width:270px">Cómo se conecta</th><th style="width:120px">Dificultad</th></tr>
+    <tr class="first"><td>Granola → CRM</td><td>Las notas de cada reunión se guardan en el contacto</td><td>Integración nativa con Attio o HubSpot (1 clic)</td><td><span class="lvl f">Fácil</span></td></tr>
+    <tr><td>CRM → Claude</td><td>Le preguntas por tu pipeline y te redacta los seguimientos</td><td>Conector de Attio o HubSpot en Claude</td><td><span class="lvl f">Fácil</span></td></tr>
+    <tr><td>Meta Ads → Claude</td><td>Lee tus campañas y te dice qué apagar y qué probar</td><td>Conector oficial de Meta (beta)</td><td><span class="lvl f">Fácil</span></td></tr>
+    <tr><td>Grok → CRM</td><td>Tu lista de prospectos entra al CRM con sus señales</td><td>Exportas la lista e importas el archivo</td><td><span class="lvl f">Fácil</span></td></tr>
+    <tr><td>WhatsApp / web → CRM</td><td>Cada lead nuevo entra solo, con su origen</td><td>Zapier, Make o n8n</td><td><span class="lvl m">Media</span></td></tr>
+    <tr><td>Paseo → CRM y GitHub</td><td>Agentes actualizan deals y guardan tus prompts</td><td>Paseo + Claude Code</td><td><span class="lvl a">Avanzada</span></td></tr>
+  </table>
+  <p class="small mt8">Empieza por la primera fila: es la que más horas te ahorra desde el día 1.</p>
+  <div class="costbar" style="margin-top:12px"><span class="k">Todo el stack para empezar</span><b>$0</b><span class="k">Cuando escalas</span><b class="r2">~$99 al mes</b><span class="k" style="max-width:330px">Claude $20 · Grok $30 · Granola $14 · Attio ~$35 · Paseo y GitHub gratis. USD, nov 2026.</span></div>
+</div>
+</section>
+
+<!-- 19 Escala: NRR -->
+<section data-step="5">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick v">Escala · con tus clientes</div>
+  <h2>Tu mejor prospecto <span class="v">ya es tu cliente</span></h2>
+  <p class="lead">NRR: cuánto crece el ingreso de tus clientes actuales sin contar clientes nuevos.</p>
+  <div class="g g3 mt20">
+    <div class="card"><div class="n" style="color:var(--vio)">↑</div><h3>Upsell</h3><p>Sube de plan cuando ya sacó todo el valor del actual.</p></div>
+    <div class="card"><div class="n" style="color:var(--vio)">+</div><h3>Cross sell</h3><p>Suma otro producto o servicio al cliente que ya confía en ti.</p></div>
+    <div class="card vio"><div class="n">∞</div><h3>Expansión por uso</h3><p>El precio crece a medida que el cliente usa más.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- 20 Escala: sistemas -->
+<section data-step="5">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick v">Escala · con equipo</div>
+  <h2>De founder-led sales a sistemas</h2>
+  <div class="flow">
+    <div class="fs"><div class="k">Paso 1</div><h3>Documenta antes de contratar</h3><p>Si no está escrito, el nuevo va a improvisar.</p></div><div class="fa">→</div>
+    <div class="fs"><div class="k">Paso 2</div><h3>Contrata para el sistema</h3><p>Busca a quien ejecute el playbook, no a un héroe.</p></div><div class="fa">→</div>
+    <div class="fs last"><div class="k">Paso 3</div><h3>Mide, itera, documenta de nuevo</h3><p>El playbook es un producto: siempre tiene versión nueva.</p></div>
+  </div>
+  <div class="g g3 mt20">
+    <div class="edge"><b>Actitud y proceso</b> pesan más que el track record</div>
+    <div class="edge"><b>La cultura</b> es lo que toleras</div>
+    <div class="edge"><b>Urgencia</b> sin ansiedad</div>
+  </div>
+</div>
+</section>
+
+<!-- 21 Lo que la IA no reemplaza -->
+<section data-step="-1">
+<div class="sl sl--mid bg-k">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick">Lo que ninguna IA reemplaza</div>
+  <h2>La IA te consigue la reunión. <span style="color:#FF5A6A">La venta la cierras tú.</span></h2>
+  <div class="g g3 mt20">
+    <div class="card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)"><h3 style="color:#fff">Escucha activa</h3><p style="color:rgba(255,255,255,.75)">Habla 30%, escucha 70%.</p></div>
+    <div class="card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)"><h3 style="color:#fff">Curiosidad</h3><p style="color:rgba(255,255,255,.75)">Pregunta "¿por qué?" hasta llegar al dolor real.</p></div>
+    <div class="card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)"><h3 style="color:#fff">Empatía</h3><p style="color:rgba(255,255,255,.75)">Entiende el miedo del cliente a equivocarse.</p></div>
+    <div class="card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)"><h3 style="color:#fff">Manejo del "no"</h3><p style="color:rgba(255,255,255,.75)">Cada no es información, no algo personal.</p></div>
+    <div class="card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)"><h3 style="color:#fff">Claridad</h3><p style="color:rgba(255,255,255,.75)">Explica tu producto en una frase.</p></div>
+    <div class="card hot"><h3>Disciplina de seguimiento</h3><p>La venta casi nunca cierra en la primera conversación.</p></div>
+  </div>
+</div>
+<aside class="notes">[PABLO: un ejemplo propio. Conecta con la disciplina del surf o del fitness.]</aside>
+</section>
+
+<!-- 22 Frase -->
+<section data-step="-1">
+<div class="sl sl--center bg-r">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="statement" style="font-size:110px">Cerrar es un evento.<br><span style="color:var(--ink)">Crecer es un sistema.</span></div>
+</div>
+</section>
+
+<!-- 23 Tarea -->
+<section data-step="-1">
+<div class="sl sl--mid bg-w">
+  <div class="tag-ev">DIGIFEST 2026<span>UPC</span></div>
+  <div class="kick">Tu tarea de esta semana</div>
+  <h2>Empieza por aquí</h2>
+  <div class="g g4 mt20">
+    <div class="card"><div class="n">01</div><h3>Haz tu número hacia atrás</h3><p>Meta, ticket y conversaciones al mes.</p></div>
+    <div class="card"><div class="n">02</div><h3>Escribe tu ICP en una frase</h3><p>Quién, qué dolor, qué parche, cuánto paga.</p></div>
+    <div class="card"><div class="n">03</div><h3>Habla con 5 personas de tu ICP</h3><p>Para entender, no para vender.</p></div>
+    <div class="card hot"><div class="n">04</div><h3>Manda hoy un mensaje de venta</h3><p>Directo, a alguien de tu red.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- 24 Preguntas + contacto -->
+<section data-step="-1">
+<div class="sl bg-v" style="padding:0">
+  <div style="display:grid;grid-template-columns:minmax(0,1fr) 600px;height:100%;width:100%;flex:1">
+    <div style="padding:100px 40px 70px 72px;display:flex;flex-direction:column;justify-content:center">
+      <div class="tag-ev" style="color:#fff">DIGIFEST 2026<span>UPC</span></div>
+      <div class="kick">Gracias</div>
+      <div class="statement" style="font-size:104px">¿Preguntas?</div>
+      <p class="lead mt20">¿En cuál de los 6 pasos estás hoy?</p>
+      <div class="speaker"><img src="img/10-headshot.jpg" alt="" style="border:3px solid #fff"><div><b>Pablo Balarín</b><span style="color:rgba(255,255,255,.75)">De closer a escalador · DIGIFEST 2026</span></div></div>
+    </div>
+    <div style="background:var(--red);display:flex;align-items:center;justify-content:center;gap:20px">
+      <div class="qr-card"><img src="img/qr-linkedin.png" alt="QR LinkedIn"><p>¿Feedback sobre tu estrategia comercial? Conversemos</p><span>LinkedIn</span></div>
+      <div class="qr-card"><img src="img/qr-instagram.png" alt="QR Instagram"><p>¿Escalamos juntos? Sígueme</p><span>Instagram</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script>
+  var STEPS=['Mide','Elige','Cierra','Encuentra','Valida','Escala'];
+  document.querySelectorAll('.reveal .slides>section').forEach(function(s,i,all){
+    if(i===0||i===all.length-1) return;
+    var st=parseInt(s.dataset.step);
+    var host=s.querySelector('.sl')||s.firstElementChild;
+    var f=document.createElement('div');f.className='foot';
+    var h='';STEPS.forEach(function(n,k){if(k===4)h+='<i></i>';h+='<span class="'+(k<4?'c':'')+(k===st?' on':'')+(k>=4?' e':'')+'">'+(k+1)+' '+n+'</span>';});
+    f.innerHTML='<span>De closer a escalador · Pablo Balarín</span><span class="steps">'+h+'</span>';
+    if(s.querySelector('.who')){s.firstElementChild.style.position='relative';s.firstElementChild.appendChild(f);} else host.appendChild(f);
+  });
+  Reveal.initialize({width:1280,height:720,margin:0,controls:true,progress:true,slideNumber:'c/t',hash:true,transition:'slide',plugins:[RevealNotes]});
+</script>
+</body>
+</html>
